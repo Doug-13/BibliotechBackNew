@@ -61,7 +61,15 @@ status: Indica se o livro está disponível para troca ou se está emprestado, a
  *         image_url:
  *           type: string
  *           description: URL da imagem de capa do livro
+ *         rating:
+ *           type: number
+ *           format: float
+ *           description: Avaliação do livro (0 a 5)
+ *         read:
+ *           type: boolean
+ *           description: Indica se o livro foi lido ou não
  */
+
 
 /**
  * @swagger
