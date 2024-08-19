@@ -1,17 +1,12 @@
-const generateUniqueId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let id = '';
-  for (let i = 0; i < 10; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
-};
+const { db } = require('../config/firebaseConfig');
+const { generateUniqueId } = require('../Components/UniqueIdGenerator'); // Ajuste o caminho conforme necessário
 
+// Adiciona um novo livro
 exports.addBook = async (req, res) => {
   console.log('Adicionando livro');
   try {
     // Obtém os dados do corpo da requisição
-    const { title, author, isbn, publisher, publish_date, genre, description, status, owner_id, visibility, image_url, rating } = req.body;
+    const { title, author, isbn, publisher, publish_date, genre, description, status, read, owner_id, visibility, image_url, rating } = req.body;
 
     // Gera um novo ID se não for fornecido
     const book_id = req.body.book_id || generateUniqueId();
@@ -29,6 +24,7 @@ exports.addBook = async (req, res) => {
       genre,
       description,
       status,
+      read, // Adiciona o campo read
       ownerId: owner_id,
       visibility,
       imageUrl: image_url,
@@ -45,33 +41,6 @@ exports.addBook = async (req, res) => {
   } catch (error) {
     // Envia uma resposta de erro
     res.status(500).send('Erro ao adicionar livro: ' + error.message);
-  }
-};
-
-
-
-
-
-// Obtém todos os livros de um usuário
-exports.getBooksByUser = async (req, res) => {
-  try {
-    const { owner_id } = req.params;
-    const booksRef = db.collection('books').where('ownerId', '==', owner_id); // Corrigido para 'ownerId'
-    const snapshot = await booksRef.get();
-
-    if (snapshot.empty) {
-      return res.status(404).json({ message: 'Nenhum livro encontrado para este usuário' });
-    }
-
-    const books = [];
-    snapshot.forEach(doc => {
-      books.push({ id: doc.id, ...doc.data() });
-    });
-
-    res.status(200).json(books);
-  } catch (error) {
-    console.error("Erro ao buscar os livros:", error); // Log do erro
-    res.status(500).json({ message: 'Erro ao buscar os livros', error: error.message || error });
   }
 };
 
@@ -121,20 +90,20 @@ exports.updateBook = async (req, res) => {
       title: req.body.title,
       author: req.body.author,
       isbn: req.body.isbn,
-      publisher:req.body.publisher,
+      publisher: req.body.publisher,
       publishDate: req.body.publish_date,
-      genre: req.body.genre, 
-      description:req.body.description,
+      genre: req.body.genre,
+      description: req.body.description,
       status: req.body.status,
-      owner_id: req.body.owner_id,
+      ownerId: req.body.owner_id,
       visibility: req.body.visibility,
       imageUrl: req.body.image_url,
-      
+      read: req.body.read, // Atualiza o campo read
       updatedAt: new Date()
     });
 
-    res.status(200).send('Book updated successfully');
+    res.status(200).send('Livro atualizado com sucesso');
   } catch (error) {
-    res.status(500).send('Error updating book: ' + error.message);
+    res.status(500).send('Erro ao atualizar livro: ' + error.message);
   }
 };
