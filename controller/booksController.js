@@ -1,29 +1,46 @@
 const { db } = require('../config/firebaseConfig');
+const { generateUniqueId } = require('../Components/UniqueIdGenerator'); // Ajuste o caminho conforme necessário
 
 // Adiciona um novo livro
 exports.addBook = async (req, res) => {
   console.log('Adicionando livro');
   try {
-    const bookRef = db.collection('books').doc(req.body.book_id);
-    await bookRef.set({
-      title: req.body.title,
-      author: req.body.author,
-      isbn: req.body.isbn,
-      publisher:req.body.publisher,
-      publishDate: req.body.publish_date,
-      genre: req.body.genre, 
-      description:req.body.description,
-      status: req.body.status,
-      ownerId: req.body.owner_id,
-      visibility: req.body.visibility,
-      imageUrl: req.body.image_url,
-       createdAt: new Date(),
-      updatedAt: new Date()
-    });
+    // Obtém os dados do corpo da requisição
+    const { title, author, isbn, publisher, publish_date, genre, description, status, read, owner_id, visibility, image_url, rating } = req.body;
 
-    res.status(200).send('Book added successfully');
+    // Gera um novo ID se não for fornecido
+    const book_id = req.body.book_id || generateUniqueId();
+
+    // Cria uma referência para o novo livro
+    const bookRef = db.collection('books').doc(book_id);
+
+    // Define os dados do livro
+    const bookData = {
+      title,
+      author,
+      isbn,
+      publisher,
+      publishDate: publish_date,
+      genre,
+      description,
+      status,
+      read, // Adiciona o campo read
+      ownerId: owner_id,
+      visibility,
+      imageUrl: image_url,
+      rating: rating || 0, // Define a avaliação, padrão 0 se não fornecido
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    // Adiciona ou atualiza o livro na coleção 'books'
+    await bookRef.set(bookData);
+
+    // Envia uma resposta de sucesso
+    res.status(200).send('Livro adicionado com sucesso');
   } catch (error) {
-    res.status(500).send('Error adding book: ' + error.message);
+    // Envia uma resposta de erro
+    res.status(500).send('Erro ao adicionar livro: ' + error.message);
   }
 };
 
@@ -73,20 +90,20 @@ exports.updateBook = async (req, res) => {
       title: req.body.title,
       author: req.body.author,
       isbn: req.body.isbn,
-      publisher:req.body.publisher,
+      publisher: req.body.publisher,
       publishDate: req.body.publish_date,
-      genre: req.body.genre, 
-      description:req.body.description,
+      genre: req.body.genre,
+      description: req.body.description,
       status: req.body.status,
       ownerId: req.body.owner_id,
       visibility: req.body.visibility,
       imageUrl: req.body.image_url,
-      
+      read: req.body.read, // Atualiza o campo read
       updatedAt: new Date()
     });
 
-    res.status(200).send('Book updated successfully');
+    res.status(200).send('Livro atualizado com sucesso');
   } catch (error) {
-    res.status(500).send('Error updating book: ' + error.message);
+    res.status(500).send('Erro ao atualizar livro: ' + error.message);
   }
 };

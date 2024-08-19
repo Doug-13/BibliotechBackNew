@@ -4,7 +4,7 @@ exports.addUserProfile = async (req, res) => {
     try {
         const userRef = db.collection('user_profile').doc('001');
         await userRef.set({
-            user_id:'001',
+            // user_id:'001',
             name: req.body.name,
             nickname: req.body.nickname,
             birthDate: req.body.birthDate,
