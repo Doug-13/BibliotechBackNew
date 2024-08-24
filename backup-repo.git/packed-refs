@@ -1,0 +1,8 @@
+# pack-refs with: peeled fully-peeled sorted 
+e675ed3322ee462488be9963dcdadf393198ec10 refs/heads/Jeff-BackNew
+cc503bc23ee2b21c173116273530781f7c64c420 refs/heads/douglas
+e675ed3322ee462488be9963dcdadf393198ec10 refs/heads/main
+67bfa06bdc3c10d3404d4963b026b698c89de9ce refs/pull/1/head
+24857ef7c9d2460c1775892a28bc7425755b345e refs/pull/2/head
+4b56b32a1d412d5cbd5185db732e7c75b63a0c4e refs/pull/3/head
+cc503bc23ee2b21c173116273530781f7c64c420 refs/pull/4/head
