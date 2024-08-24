@@ -27,6 +27,14 @@ const router = express.Router();
  *         status:
  *           type: string
  *           description: Status da solicitação
+ *         loan_date:
+ *           type: string
+ *           format: date
+ *           description: Data de empréstimo do livro
+ *         return_date:
+ *           type: string
+ *           format: date
+ *           description: Data de devolução do livro
  */
 
 /**

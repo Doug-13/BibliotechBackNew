@@ -1,24 +1,36 @@
-const db = require('../config/firebaseConfig'); 
+const { db } = require('../config/firebaseConfig');
+db.settings({ ignoreUndefinedProperties: true });
 
-// Adiciona uma solicitação de livro
 exports.addBookRequest = async (req, res) => {
-    console.log('Adicionando solicitação de livro');
-    try {
-      const requestRef = db.collection('book_requests').doc();
-      await requestRef.set({
-        requesterId: req.body.requester_id,
-        ownerId: req.body.owner_id,
-        bookId: req.body.book_id,
-        status: req.body.status,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
+  console.log('Dados recebidos:', req.body);
   
-      res.status(200).send('Book request added successfully');
-    } catch (error) {
-      res.status(500).send('Error adding book request: ' + error.message);
-    }
-  };
+  const { requester_id, owner_id, bookId, status, loan_date, return_date } = req.body;
+
+  // Valida se todos os campos estão presentes e não são undefined
+  if (!requester_id || !owner_id || !bookId || !status || !loan_date || !return_date) {
+    return res.status(400).send('Missing required fields');
+  }
+
+  try {
+    const requestRef = db.collection('book_requests').doc();
+    await requestRef.set({
+      requesterId: requester_id,
+      ownerId: owner_id,
+      bookId: bookId,
+      status: status,
+      loanDate: loan_date,
+      returnDate: return_date,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    res.status(200).send('Book request added successfully');
+  } catch (error) {
+    res.status(500).send('Error adding book request: ' + error.message);
+  }
+};
+
+
+
   
   // Obtém solicitações de livro de um usuário
   exports.getBookRequests = async (req, res) => {

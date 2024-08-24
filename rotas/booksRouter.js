@@ -65,11 +65,7 @@ status: Indica se o livro está disponível para troca ou se está emprestado, a
  *           type: number
  *           format: float
  *           description: Avaliação do livro (0 a 5)
- *         read:
- *           type: boolean
- *           description: Indica se o livro foi lido ou não
  */
-
 
 /**
  * @swagger
@@ -180,5 +176,110 @@ router.get('/user/:owner_id', booksController.getBooksByUser);
  *         description: Erro ao atualizar o livro
  */
 router.put('/book/:id', booksController.updateBook);
+
+/**
+ * @swagger
+ * /books/book/{id}:
+ *   delete:
+ *     summary: Deleta um livro pelo ID
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do livro
+ *     responses:
+ *       200:
+ *         description: Livro deletado com sucesso
+ *       404:
+ *         description: Livro não encontrado
+ *       500:
+ *         description: Erro ao deletar o livro
+ */
+router.delete('/book/:id', booksController.deleteBook);
+
+
+/**
+ * @swagger
+ *  /books/user/{owner_id}/status:
+ *   get:
+ *     summary: Retorna todos os livros de um usuário com informações sobre se estão emprestados
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: owner_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do proprietário dos livros
+ *     responses:
+ *       200:
+ *         description: Lista de livros do usuário com informações sobre empréstimos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   bookId:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   author:
+ *                     type: string
+ *                   isbn:
+ *                     type: string
+ *                   publisher:
+ *                     type: string
+ *                   publishDate:
+ *                     type: string
+ *                     format: date
+ *                   genre:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   visibility:
+ *                     type: string
+ *                   imageUrl:
+ *                     type: string
+ *                   rating:
+ *                     type: number
+ *                     format: float
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                   loan:
+ *                     type: object
+ *                     properties:
+ *                       requestId:
+ *                         type: string
+ *                       requesterId:
+ *                         type: string
+ *                       loanDate:
+ *                         type: string
+ *                         format: date
+ *                       returnDate:
+ *                         type: string
+ *                         format: date
+ *                       status:
+ *                         type: string
+ *                       deliveryStatus:
+ *                         type: string
+ *                         description: Status da devolução (Em dia ou Atrasado)
+ *       404:
+ *         description: Nenhum livro encontrado para este usuário
+ *       500:
+ *         description: Erro ao buscar os livros e status de empréstimo
+ */
+router.get('/user/:owner_id/status', booksController.getBooksWithLoanStatus);
+
 
 module.exports = router;
